@@ -1,0 +1,155 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#include "bst.h"
+
+//int bstDoCheck = 1;		/* set true for paranoid consistency checking */
+
+//#define doCheck(_bp) (bstDoCheck && bstCheck(_bp))
+
+/* create a new list */
+BSTree *bstAlloc()
+{
+  BSTree *tp = (BSTree *)malloc(sizeof(BSTree));
+  tp->root = 0;
+  //doCheck(tp);
+  return tp;
+}
+
+/* recycle a list, discarding all items it contains */
+void BSTFree(BSTree *tp)
+{
+  //doCheck(tp);
+  BSTMakeEmpty(tp);
+  free(tp);
+}
+
+/*Delete all elements of the tree */
+void deleteTree(BSTItem *current){
+  BSTItem *leftChild = current->left;
+  BSTItem *rightChild = current->right;
+
+  if(leftChild != 0){
+    deleteTree(leftChild);
+  }
+  if(rightChild !=0){
+    deleteTree(rightChild);
+  }
+  free(current);
+
+}
+void BSTMakeEmpty(BSTree *tp)
+{
+  //doCheck(tp);
+  deleteTree(tp->root);
+  //doCheck(tp);
+}
+  
+/* append a copy of str to end of list */
+void BSTAdd(BSTree *tp, char *s)
+{
+  int len;
+  char *scopy;
+  BSTItem *i;
+
+  //doCheck(tp);
+  /* w = freshly allocated copy of putWord */
+  for (len = 0; s[len]; len++) /* compute length */
+    ;
+  scopy = (char *)malloc(len+1);
+  for (len = 0; s[len]; len++) /* copy chars */
+    scopy[len] = s[len];
+  scopy[len] = 0;			/* terminate copy */
+
+
+  /* i = new item containing s */
+  i = (BSTItem *)malloc(sizeof(BSTItem));
+  i->employee = scopy;
+  i->left = 0;
+  i->right = 0;
+
+  /* append to end of list */
+  if (lp->last) {			/* list not empty */
+    lp->last->next = i;
+  } else {			/* list empty */
+    lp->first = i;
+  }
+
+  /* new item is last on list */
+  lp->last = i;
+  //doCheck(lp);
+}
+
+/* print list membership.  Prints default mesage if message is NULL */
+void BSTPrint(BSTree *tp, char *msg)
+{
+  BSTItem *ip;
+  int count = 1;
+  //doCheck(tp);
+  puts(msg ? msg :" List contents:");
+  for (ip = lp->first; ip; ip = ip->next) {
+    printf("  %d: <%s>\n", count, ip->str);
+    count++;
+  }
+}
+
+int main(){
+
+  FILE *file;
+  BSTree *tree;
+
+  file = fopen("test.txt", "a+");
+  if(!file){
+    printf("No file");
+    exit(0);
+  }
+  char c;
+  char *str;
+  
+  c = fgetc(file);
+  int i = 0;
+  while(c != EOF){
+    if(c != '\n'){
+      str[i] = c;
+      i++;
+    }
+    else{
+      str[i] = 0;
+      BSTAdd(tree, str);
+      i = 0;
+    }
+    c = fgetc(file);
+  }
+
+  
+  fclose(file);
+    
+  
+    
+  int answer = 0;
+  printf("Welcome to ACME Solutions.\n\nEnter the option number:\n");
+  printf("1) Add New Employee\n2) Remove Employee\n3) Show All Employee Names\n"  );
+  scanf("%d", answer);
+  char *name;
+  switch(answer){
+  case 1:
+    printf("Enter name of new employee:");
+    scanf("%s", name);
+    BSTAdd(tree, name);
+    break;
+    
+  case 2:
+    printf("Enter name of employee to be removed:");
+    scanf("%s", name);
+    BSTRemove(tree, name);
+    break;
+
+  case 3:
+    BSTPrint(tree);
+    break;
+    
+  }
+
+  return 0;
+}
+

@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+
+int main(){
+  FILE *file;
+
+  file = fopen("test.txt", "r");
+  
+  if(!file){
+    printf("No such file");
+    exit(0);
+  }
+
+  char c;
+  c=fgetc(file);
+
+  while(c != EOF){
+    printf("%c", c);
+    c = fgetc(file);
+  }
+
+  fclose(file);
+  return 0;
+
+
+}
