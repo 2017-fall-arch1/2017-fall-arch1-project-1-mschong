@@ -105,6 +105,7 @@ void BSTAdd(BSTree *tp, char *s){
 /* print list membership.  Prints default mesage if message is NULL */
 void BSTPrintAll(BSTItem *current){
   if(current == NULL){
+  n");
     return;
   }
   
@@ -112,13 +113,12 @@ void BSTPrintAll(BSTItem *current){
   BSTItem *rightChild = current->right;
 
   BSTPrintAll(leftChild);
-  printf("%s\n", current->employee);
+  printf("%s", current->employee);
   BSTPrintAll(rightChild);
 }
 
 void BSTPrint(BSTree *tp)
 {
-  printf("\nEmployees: \n");
   BSTPrintAll(tp->root);
 }
 
@@ -146,6 +146,7 @@ int main(){
     }
     else{
       str[i] = 0;
+      printf("adding %s to tree\n", str);
       BSTAdd(tree, str);
       i = 0;
     }
@@ -153,13 +154,13 @@ int main(){
   }
 
   
+  fclose(file);
     
   
     
   int answer = 0;
-  printf("Welcome to ACME Solutions.\n\nEnter the option number:");
-  while(1){
-  printf("\n1) Add New Employee\n2) Remove Employee\n3) Show All Employee Names\n4) Exit\n"  );
+  printf("Welcome to ACME Solutions.\n\nEnter the option number:\n");
+  printf("1) Add New Employee\n2) Remove Employee\n3) Show All Employee Names\n"  );
   scanf("%d", &answer);
   char *name = malloc(50);
   switch(answer){
@@ -167,8 +168,6 @@ int main(){
     printf("Enter name of new employee:");
     scanf("%s", name);
     BSTAdd(tree, name);
-    fwrite(name, 1, sizeof(name+1), file);
-    fwrite("\n", 1, 1, file);
     break;
     
   case 2:
@@ -180,13 +179,9 @@ int main(){
   case 3:
     BSTPrint(tree);
     break;
-
-  case 4:
-    fclose(file);
-    exit(0);
     
   }
-  }
+
   return 0;
 }
 
