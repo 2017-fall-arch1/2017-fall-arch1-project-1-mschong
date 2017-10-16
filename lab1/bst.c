@@ -167,8 +167,8 @@ int main(){
     printf("Enter name of new employee:");
     scanf("%s", name);
     BSTAdd(tree, name);
-    fwrite(name, 1, sizeof(name+1), file);
-    fwrite("\n", 1, 1, file);
+    fputs(name, file);
+    fputs("\n", file);
     break;
     
   case 2:
