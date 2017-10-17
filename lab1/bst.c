@@ -122,7 +122,25 @@ void BSTPrint(BSTree *tp)
   BSTPrintAll(tp->root);
 }
 
+void removeITem(BSTItem *current, char *str){
+  if(current == NULL){
+    return;
+  }
 
+  if(strcmp(current->employee, str) == 0){
+    //remove
+  }
+  else if(strcmp(current->employee,str) > 0){
+    removeItem(current->right, str);
+  }
+  else{
+    removeItem(current->left,str);
+  }
+}
+
+void BSTRemove(BSTree *tp, char *str){
+  removeItem(tp->root, str);
+}
 
 
 int main(){
