@@ -146,13 +146,12 @@ int main(){
     }
     else{
       str[i] = 0;
+      printf("%s\n", str);
       BSTAdd(tree, str);
       i = 0;
     }
     c = fgetc(file);
   }
-
-  
     
   
     
@@ -165,10 +164,10 @@ int main(){
   switch(answer){
   case 1:
     printf("Enter name of new employee:");
-    scanf("%s", name);
+    scanf(" %[^\n]", name);
+    printf("%s\n", name);
     BSTAdd(tree, name);
-    fputs(name, file);
-    fputs("\n", file);
+    fprintf(file, "%s\n", name);
     break;
     
   case 2:

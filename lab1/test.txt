@@ -3,5 +3,3 @@ f
 g
 h
 j
-marina
-eduardo
