@@ -122,24 +122,82 @@ void BSTPrint(BSTree *tp)
   BSTPrintAll(tp->root);
 }
 
-void removeITem(BSTItem *current, char *str){
-  if(current == NULL){
-    return;
+char *getLargestfromLeft(BSTItem *current){
+ 
+  current = current->left;
+  while(current->right != NULL){
+    current = current->right;
   }
+  char *copy = malloc(sizeof(current->employee));
+  strcpy(copy, current->employee);
+  return copy;
+}
 
-  if(strcmp(current->employee, str) == 0){
-    //remove
+char *getSmallestfromRight(BSTItem *current){
+  current = current->right;
+  while(current->left != NULL){
+    current = current->right;
   }
-  else if(strcmp(current->employee,str) > 0){
-    removeItem(current->right, str);
+  char *copy = malloc(sizeof(current->employee));
+  strcpy(copy, current->employee);
+  return copy;
+
+}
+
+BSTItem *removeItem(BSTItem *current, char *str){
+  
+  if(current == NULL){
+    return current;
+  }
+  printf("Currently at %s\n", current->employee);
+  if(strcmp(current->employee, str) == 0){
+    printf("Found!\n");
+    //remove if it's leaf
+    if(current->left == NULL && current->right == NULL){
+      printf("Freeing current\n");
+      free(current);
+      return 0;
+    }
+    else if(current->left == NULL){
+      current->employee = getSmallestfromRight(current);
+      current->right = removeItem(current->right, current->employee);
+      
+    }
+    else if(current->right==NULL){
+      current->employee = getLargestfromLeft(current);
+      current->left = removeItem(current->left, current->employee);
+    }
+    else{
+      current->employee = getLargestfromLeft(current);
+      current->left = removeItem(current->left, current->employee);
+    }
+  }
+  else if(strcmp(str, current->employee) > 0){
+    printf("Going right searching for %s\n", str);
+    current->right = removeItem(current->right, str);
   }
   else{
-    removeItem(current->left,str);
+    printf("Going right searching for %s\n", str);
+    current->left = removeItem(current->left,str);
   }
+  //return current;
 }
 
 void BSTRemove(BSTree *tp, char *str){
-  removeItem(tp->root, str);
+  tp->root = removeItem(tp->root, str);
+}
+
+void treeFile(BSTItem *current, FILE *file){
+  if(current == NULL){
+    return;
+  }
+  
+  BSTItem *leftChild = current->left;
+  BSTItem *rightChild = current->right;
+
+  fprintf(file, "%s\n", current->employee);
+  treeFile(leftChild, file);
+  treeFile(rightChild, file);   
 }
 
 
@@ -164,7 +222,6 @@ int main(){
     }
     else{
       str[i] = 0;
-      printf("%s\n", str);
       BSTAdd(tree, str);
       i = 0;
     }
@@ -176,22 +233,21 @@ int main(){
   int answer = 0;
   printf("Welcome to ACME Solutions.\n\nEnter the option number:");
   while(1){
-  printf("\n1) Add New Employee\n2) Remove Employee\n3) Show All Employee Names\n4) Exit\n"  );
+  printf("\n   1) Add New Employee\n   2) Remove Employee\n   3) Show All Employee Names\n   4) Exit\n"  );
   scanf("%d", &answer);
   char *name = malloc(50);
   switch(answer){
   case 1:
     printf("Enter name of new employee:");
     scanf(" %[^\n]", name);
-    printf("%s\n", name);
     BSTAdd(tree, name);
     fprintf(file, "%s\n", name);
     break;
     
   case 2:
     printf("Enter name of employee to be removed:");
-    scanf("%s", name);
-    //    BSTRemove(tree, name);
+    scanf(" %[^\n]", name);
+    BSTRemove(tree, name);
     break;
 
   case 3:
@@ -199,6 +255,10 @@ int main(){
     break;
 
   case 4:
+    fclose(file);
+    file = fopen("test.txt", "w");
+    //write tree contents
+    treeFile(tree->root, file);
     fclose(file);
     exit(0);
     
