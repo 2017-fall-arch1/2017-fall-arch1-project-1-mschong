@@ -8,7 +8,7 @@ int bstDoCheck = 1;		/* set true for paranoid consistency checking */
 
 #define doCheck(_bp) (bstDoCheck)
 
-/* create a new list */
+/* create a new tree */
 BSTree *bstAlloc()
 {
   BSTree *tp = (BSTree *)malloc(sizeof(BSTree));
@@ -17,7 +17,7 @@ BSTree *bstAlloc()
   return tp;
 }
 
-/* recycle a list, discarding all items it contains */
+/* recycle a tree, discarding all items it contains */
 void BSTFree(BSTree *tp)
 {
   doCheck(tp);
@@ -45,9 +45,10 @@ void BSTMakeEmpty(BSTree *tp)
   deleteTree(tp->root);
   doCheck(tp);
 }
-  
-void AddEmployee(BSTree *tp, BSTItem *current, char *s){
 
+//add new node with employee name to the tree
+void AddEmployee(BSTree *tp, BSTItem *current, char *s){
+  //create the new node and add it to tree
   if(current == NULL){
       current = (BSTItem *)malloc(sizeof(BSTItem));
       char *copy = malloc(sizeof(s));
@@ -58,8 +59,9 @@ void AddEmployee(BSTree *tp, BSTItem *current, char *s){
       tp->root = current;
       return;
   }
-  
+  //checks the vvalue of the string so it can place it in the correct place in the tree
   int result = strcmp(s, current->employee);
+  //places employee in the left part
   if(result < 0){
     if(current->left == NULL){
       BSTItem *i;
@@ -75,6 +77,7 @@ void AddEmployee(BSTree *tp, BSTItem *current, char *s){
       AddEmployee(tp, current->left, s);
     }
   }
+  //places employee to the right
   else if(result > 0){
     if(current->right == NULL){
       BSTItem *i;
@@ -89,20 +92,20 @@ void AddEmployee(BSTree *tp, BSTItem *current, char *s){
     else{
       AddEmployee(tp, current->right, s);
     }
-    //right
   }
+  //does not add employee if it's already on the tree
   else{
     return;
   }
 }
 
-
+//call add method with the tree
 void BSTAdd(BSTree *tp, char *s){
   AddEmployee(tp, tp->root, s);
 
 }
 
-/* print list membership.  Prints default mesage if message is NULL */
+/* print tree membership */
 void BSTPrintAll(BSTItem *current){
   if(current == NULL){
     return;
@@ -116,12 +119,14 @@ void BSTPrintAll(BSTItem *current){
   BSTPrintAll(rightChild);
 }
 
+//call print method with tree
 void BSTPrint(BSTree *tp)
 {
   printf("\nEmployees: \n");
   BSTPrintAll(tp->root);
 }
 
+//get the largest node from the left child
 char *getLargestfromLeft(BSTItem *current){
  
   current = current->left;
@@ -133,6 +138,7 @@ char *getLargestfromLeft(BSTItem *current){
   return copy;
 }
 
+//get the smallest node from the right child
 char *getSmallestfromRight(BSTItem *current){
   current = current->right;
   while(current->left != NULL){
@@ -144,49 +150,51 @@ char *getSmallestfromRight(BSTItem *current){
 
 }
 
+//removes employee node from the tree
 BSTItem *removeItem(BSTItem *current, char *str){
   
   if(current == NULL){
     return current;
   }
-  printf("Currently at %s\n", current->employee);
+
   if(strcmp(current->employee, str) == 0){
     printf("Found!\n");
     //remove if it's leaf
     if(current->left == NULL && current->right == NULL){
-      printf("Freeing current\n");
       free(current);
       return 0;
     }
+    //if there is no left child get smallest from right child
     else if(current->left == NULL){
       current->employee = getSmallestfromRight(current);
       current->right = removeItem(current->right, current->employee);
       
     }
+    //if there is no right child get largest from left child
     else if(current->right==NULL){
       current->employee = getLargestfromLeft(current);
       current->left = removeItem(current->left, current->employee);
     }
     else{
+      //remove desired node and replace with the largest from the left child
       current->employee = getLargestfromLeft(current);
       current->left = removeItem(current->left, current->employee);
     }
   }
   else if(strcmp(str, current->employee) > 0){
-    printf("Going right searching for %s\n", str);
     current->right = removeItem(current->right, str);
   }
   else{
-    printf("Going right searching for %s\n", str);
     current->left = removeItem(current->left,str);
   }
-  //return current;
-}
 
+}
+//call remove method with tree root
 void BSTRemove(BSTree *tp, char *str){
   tp->root = removeItem(tp->root, str);
 }
 
+//write updated tree to file  in preorder
 void treeFile(BSTItem *current, FILE *file){
   if(current == NULL){
     return;
@@ -205,14 +213,14 @@ int main(){
   FILE *file;
   BSTree *tree= bstAlloc();
 
-  file = fopen("test.txt", "a+");
+  file = fopen("tree.txt", "a+");
   if(!file){
     printf("No file");
     exit(0);
   }
   char c;
   char *str;
-  
+  //read file
   c = fgetc(file);
   int i = 0;
   while(c != EOF){
@@ -229,7 +237,7 @@ int main(){
   }
     
   
-    
+  //interface
   int answer = 0;
   printf("Welcome to ACME Solutions.\n\nEnter the option number:");
   while(1){
@@ -256,8 +264,8 @@ int main(){
 
   case 4:
     fclose(file);
-    file = fopen("test.txt", "w");
-    //write tree contents
+    file = fopen("tree.txt", "w");
+    //write tree contents to file
     treeFile(tree->root, file);
     fclose(file);
     exit(0);
