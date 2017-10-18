@@ -38,20 +38,20 @@ Select option
   4. to exit
 
 Adding Method:
-       1. Once selected, enter name of the new employee
-       2. Name is stored in a node and is added to the file
-       3. If the name does not exist in the tree, the name will be placed in its respective place following the alphabetical order.
-       4. Otherwise it it already exists, the name will not be added.
+* Once selected, enter name of the new employee
+* Name is stored in a node and is added to the file
+* If the name does not exist in the tree, the name will be placed in its respective place following the alphabetical order.
+* Otherwise it it already exists, the name will not be added.
 
 Removing Method:
-       1. Once selected, enter name of the employee to be removed
-       2. Searches for that name
-       3. Once found, it is removed and replaced with the largest from the leftmost side or the smallest from the right side depending on the structure of the tree. This is done recursively to maintain the tree structure.
+* Once selected, enter name of the employee to be removed
+* Searches for that name
+* Once found, it is removed and replaced with the largest from the leftmost side or the smallest from the right side depending on the structure of the tree. This is done recursively to maintain the tree structure.
 
 Print Method:
-       1. Inorder printing
+* Inorder printing
 
 Exit:
-      1. Writes the tree in preorder.
-      2. Exits program
+* Writes the tree in preorder.
+* Exits program
 	  
